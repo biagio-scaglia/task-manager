@@ -45,10 +45,10 @@
                     </StackPanel>
 
                     <!-- Window Controls -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
-                        <Button Content="-" Style="{StaticResource Y2KButton}" Width="40" Padding="0" Click="MinimizeButton_Click" Background="Transparent" BorderThickness="0" Foreground="{StaticResource ChromeHighlightBrush}"/>
-                        <Button Content="O" Style="{StaticResource Y2KButton}" Width="40" Padding="0" Click="MaximizeButton_Click" Background="Transparent" BorderThickness="0" Foreground="{StaticResource ChromeHighlightBrush}"/>
-                        <Button Content="X" Style="{StaticResource Y2KButton}" Width="40" Padding="0" Click="CloseButton_Click" Background="Transparent" BorderThickness="0" Foreground="#FF3333"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button Content="-" Style="{StaticResource Y2KButton}" Width="40" Padding="0" Click="MinimizeButton_Click" Background="Transparent" BorderThickness="0" Foreground="{StaticResource ChromeHighlightBrush}" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                        <Button Content="O" Style="{StaticResource Y2KButton}" Width="40" Padding="0" Click="MaximizeButton_Click" Background="Transparent" BorderThickness="0" Foreground="{StaticResource ChromeHighlightBrush}" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                        <Button Content="X" Style="{StaticResource Y2KButton}" Width="40" Padding="0" Click="CloseButton_Click" Background="Transparent" BorderThickness="0" Foreground="#FF3333" WindowChrome.IsHitTestVisibleInChrome="True"/>
                     </StackPanel>
                     
                     <Border BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="0,0,0,1" Grid.ColumnSpan="2"/>
