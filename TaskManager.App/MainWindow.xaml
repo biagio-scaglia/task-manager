@@ -55,7 +55,7 @@
                 </Grid>
 
                 <!-- Background Image (shadow.png) behind Glass -->
-                <Image Grid.Row="1" Source="pack://application:,,,/Assets/shadow.png" Stretch="UniformToFill" Opacity="0.4" StretchDirection="Both"/>
+                <Image Grid.Row="1" Source="pack://application:,,,/Assets/shadow.png" Stretch="UniformToFill" VerticalAlignment="Top" Margin="0,-150,0,0" Opacity="0.1"/>
 
                 <!-- Main Content Area with Glass Panel -->
                 <Border Grid.Row="1" Style="{StaticResource Y2KGlassPanel}" Margin="15">
