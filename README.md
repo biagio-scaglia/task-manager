@@ -1,5 +1,9 @@
 # DEV MGR [Y2K] - Task Manager
 
+<p align="center">
+  <img src="TaskManager.App/Assets/logo.png" alt="DEV MGR Logo" width="128"/>
+</p>
+
 A hyper-stylized System & Developer Manager built with **C# WPF** designed around an unmistakable **Y2K / Winamp / Sci-Fi** aesthetic. 
 
 Allows for deep Operating System querying with a sleek glass interface:
