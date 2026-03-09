@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.NetworkInformation;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TaskManager.App.Models;
 
@@ -11,63 +12,66 @@ public class SystemPortService
 {
     public async Task<List<SystemPort>> GetOpenPortsAsync()
     {
-        return await Task.Run(() =>
+        var ports = new List<SystemPort>();
+        
+        var processStartInfo = new ProcessStartInfo
         {
-            var ports = new List<SystemPort>();
-            try
+            FileName = "netstat.exe",
+            Arguments = "-ano",
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            CreateNoWindow = true
+        };
+
+        try
+        {
+            using var process = Process.Start(processStartInfo);
+            if (process != null)
             {
-                IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
-                TcpConnectionInformation[] connections = properties.GetActiveTcpConnections();
+                using var reader = process.StandardOutput;
+                string line = await reader.ReadToEndAsync();
                 
-                // Active TCP Connections
-                foreach (var c in connections)
+                var regex = new Regex(@"^\s+(TCP|UDP)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([0-9]+)", RegexOptions.Multiline);
+                var matches = regex.Matches(line);
+
+                foreach (Match match in matches)
                 {
-                    ports.Add(new SystemPort
+                    if (match.Success)
                     {
-                        Protocol = "TCP",
-                        LocalAddress = c.LocalEndPoint.Address.ToString(),
-                        PortNumber = c.LocalEndPoint.Port,
-                        State = c.State.ToString(),
-                        ProcessId = 0, 
-                        ProcessName = "SYS.NET.TCP" 
-                    });
-                }
-                
-                // TCP Listeners
-                var tcpListeners = properties.GetActiveTcpListeners();
-                foreach (var l in tcpListeners)
-                {
-                    ports.Add(new SystemPort
-                    {
-                        Protocol = "TCP",
-                        LocalAddress = l.Address.ToString(),
-                        PortNumber = l.Port,
-                        State = "Listening",
-                        ProcessId = 0,
-                        ProcessName = "SYS.NET.LISTENER"
-                    });
-                }
-                
-                // UDP Listeners
-                var udpListeners = properties.GetActiveUdpListeners();
-                foreach (var u in udpListeners)
-                {
-                    ports.Add(new SystemPort
-                    {
-                        Protocol = "UDP",
-                        LocalAddress = u.Address.ToString(),
-                        PortNumber = u.Port,
-                        State = "Listening",
-                        ProcessId = 0,
-                        ProcessName = "SYS.NET.UDP"
-                    });
+                        var localAddressAndPort = match.Groups[2].Value;
+                        int portNumber = 0;
+                        string address = localAddressAndPort;
+                        
+                        var lastColonIndex = localAddressAndPort.LastIndexOf(':');
+                        if (lastColonIndex >= 0 && lastColonIndex < localAddressAndPort.Length - 1)
+                        {
+                            address = localAddressAndPort.Substring(0, lastColonIndex);
+                            int.TryParse(localAddressAndPort.Substring(lastColonIndex + 1), out portNumber);
+                        }
+
+                        if (portNumber > 0 && int.TryParse(match.Groups[5].Value, out int pid) && pid > 0)
+                        {
+                            string processName = GetProcessNameByPid(pid);
+                            
+                            ports.Add(new SystemPort
+                            {
+                                Protocol = match.Groups[1].Value,
+                                LocalAddress = address,
+                                PortNumber = portNumber,
+                                State = match.Groups[4].Value,
+                                ProcessId = pid,
+                                ProcessName = processName
+                            });
+                        }
+                    }
                 }
             }
-            catch
-            {
-            }
-            return ports;
-        });
+        }
+        catch (Exception)
+        {
+        }
+
+        return ports;
     }
 
     public bool KillProcess(int processId)

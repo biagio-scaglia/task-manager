@@ -6,8 +6,10 @@
         xmlns:local="clr-namespace:TaskManager.App"
         xmlns:viewmodels="clr-namespace:TaskManager.App.ViewModels"
         xmlns:controls="clr-namespace:TaskManager.App.Controls"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
+        Icon="pack://application:,,,/Assets/logo.ico"
         Title="DEV MGR [Y2K]" Height="700" Width="1000" MinWidth="800" MinHeight="600"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         ResizeMode="CanResizeWithGrip"
@@ -72,10 +74,33 @@
 
                         <!-- Sidebar -->
                         <StackPanel Grid.Column="0" Margin="10">
-                            <Button Content="> SYSTEM" Command="{Binding LoadSystemViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding IsSystemViewVisible, Converter={x:Static local:Converters.ActiveForegroundConverter}}"/>
-                            <Button Content="> PORTS" Command="{Binding LoadPortsViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding IsPortsViewVisible, Converter={x:Static local:Converters.ActiveForegroundConverter}}"/>
-                            <Button Content="> DOCKER" Command="{Binding LoadDockerViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding IsDockerViewVisible, Converter={x:Static local:Converters.ActiveForegroundConverter}}"/>
-                            <Button Content="> REFRESH" Command="{Binding RefreshCurrentViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,30,0,0" HorizontalContentAlignment="Left" Foreground="{StaticResource PureWhiteBrush}"/>
+                            <Button Command="{Binding LoadSystemViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding IsSystemViewVisible, Converter={x:Static local:Converters.ActiveForegroundConverter}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="MonitorDashboard" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="SYSTEM" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                                </StackPanel>
+                            </Button>
+                            
+                            <Button Command="{Binding LoadPortsViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding IsPortsViewVisible, Converter={x:Static local:Converters.ActiveForegroundConverter}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="Lan" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="PORTS" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                                </StackPanel>
+                            </Button>
+                            
+                            <Button Command="{Binding LoadDockerViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding IsDockerViewVisible, Converter={x:Static local:Converters.ActiveForegroundConverter}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="Docker" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="DOCKER" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                                </StackPanel>
+                            </Button>
+                            
+                            <Button Command="{Binding RefreshCurrentViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,30,0,0" HorizontalContentAlignment="Left" Foreground="{StaticResource PureWhiteBrush}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="Refresh" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="REFRESH" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource PureWhiteBrush}"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
 
                         <!-- Divider -->

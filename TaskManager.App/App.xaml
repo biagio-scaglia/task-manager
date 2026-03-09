@@ -74,6 +74,80 @@
             <Setter Property="CornerRadius" Value="0"/>
         </Style>
 
+        <!-- Y2K ScrollBar RepeatButton Style (Up/Down Arrows) -->
+        <Style x:Key="Y2KScrollBarButton" TargetType="RepeatButton">
+            <Setter Property="Background" Value="{StaticResource DarkChromeGradientBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MetallicGreyBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Y2K ScrollBar Thumb Style -->
+        <Style x:Key="Y2KScrollBarThumb" TargetType="Thumb">
+            <Setter Property="Background" Value="{StaticResource ChromeGradientBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PureWhiteBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="1,0,1,0"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Full Y2K ScrollBar Style -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="{StaticResource DeepBlackBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkChromeBrush}"/>
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition MaxHeight="16"/>
+                                <RowDefinition Height="0.00001*"/>
+                                <RowDefinition MaxHeight="16"/>
+                            </Grid.RowDefinitions>
+                            
+                            <!-- Up Button -->
+                            <RepeatButton Grid.Row="0" Style="{StaticResource Y2KScrollBarButton}" Command="ScrollBar.LineUpCommand">
+                                <TextBlock Text="^" Foreground="{StaticResource PureWhiteBrush}" FontSize="10" FontWeight="Bold" Margin="0,2,0,0"/>
+                            </RepeatButton>
+                            
+                            <!-- Track and Thumb -->
+                            <Track x:Name="PART_Track" Grid.Row="1" IsDirectionReversed="true">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="false"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource Y2KScrollBarThumb}" Margin="1,0"/>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="false"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                            
+                            <!-- Down Button -->
+                            <RepeatButton Grid.Row="2" Style="{StaticResource Y2KScrollBarButton}" Command="ScrollBar.LineDownCommand">
+                                <TextBlock Text="v" Foreground="{StaticResource PureWhiteBrush}" FontSize="10" FontWeight="Bold" Margin="0,-2,0,0"/>
+                            </RepeatButton>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Base Text Block -->
         <Style TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Consolas, Courier New, monospace"/>

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="300">
     <Border Background="{StaticResource DeepBlackBrush}" BorderBrush="{StaticResource SoftWhiteBrush}" BorderThickness="1" CornerRadius="0">
@@ -11,8 +12,8 @@
                 <ColumnDefinition Width="30"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <!-- Magnifying Glass Icon (Text representation for Y2K) -->
-            <TextBlock Text="[?]" Foreground="{StaticResource ChromeHighlightBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+            <!-- Magnifying Glass Icon (Material Vector) -->
+            <iconPacks:PackIconMaterial Kind="Magnify" Foreground="{StaticResource ChromeHighlightBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             
             <TextBox x:Name="SearchBox" Grid.Column="1" Background="Transparent" Foreground="{StaticResource PureWhiteBrush}" 
                      BorderThickness="0" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="14"
