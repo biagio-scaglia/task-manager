@@ -58,7 +58,7 @@ classDiagram
 
 ## 📝 TODO List
 
-- [ ] Refactor generic Regex parsing in `SystemPortService` for non-Windows parity (if Porting to MAUI/Avalonia).
+- [x] ~~Refactor generic Regex parsing in `SystemPortService` for non-Windows parity (if Porting to MAUI/Avalonia).~~
 - [ ] Add loading animations / skeleton screens while `DockerService` queries the CLI.
 - [ ] Implement settings page to let the user change the Y2K color palette (e.g. from Dark Chrome to Neon Matrix Green).
 - [ ] Create an installation script (`.ps1`) to automatically configure Docker CLI permissions for Windows.

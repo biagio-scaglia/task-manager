@@ -35,6 +35,14 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool isSystemViewVisible;
 
+    [ObservableProperty]
+    private string searchQuery = string.Empty;
+
+    partial void OnSearchQueryChanged(string value)
+    {
+        _ = RefreshCurrentViewAsync();
+    }
+
     public MainViewModel()
     {
         portService = new SystemPortService();
@@ -87,10 +95,18 @@ public partial class MainViewModel : ObservableObject
         IsDockerViewVisible = false;
 
         OpenPorts.Clear();
+        string query = SearchQuery?.ToLower() ?? string.Empty;
         var ports = await portService.GetOpenPortsAsync();
+        
         foreach (var p in ports)
         {
-            OpenPorts.Add(p);
+            if (string.IsNullOrWhiteSpace(query) || 
+                p.ProcessName.ToLower().Contains(query) || 
+                p.PortNumber.ToString().Contains(query) || 
+                p.LocalAddress.ToLower().Contains(query))
+            {
+                OpenPorts.Add(p);
+            }
         }
     }
 
@@ -103,10 +119,18 @@ public partial class MainViewModel : ObservableObject
         IsDockerViewVisible = true;
 
         DockerContainers.Clear();
+        string query = SearchQuery?.ToLower() ?? string.Empty;
         var containers = await dockerService.GetContainersAsync();
+        
         foreach (var c in containers)
         {
-            DockerContainers.Add(c);
+            if (string.IsNullOrWhiteSpace(query) || 
+                c.Names.ToLower().Contains(query) || 
+                c.Image.ToLower().Contains(query) || 
+                c.Status.ToLower().Contains(query))
+            {
+                DockerContainers.Add(c);
+            }
         }
     }
 

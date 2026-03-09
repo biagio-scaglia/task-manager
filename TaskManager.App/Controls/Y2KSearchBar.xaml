@@ -1,0 +1,36 @@
+<UserControl x:Class="TaskManager.App.Controls.Y2KSearchBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="300">
+    <Border Background="{StaticResource DeepBlackBrush}" BorderBrush="{StaticResource SoftWhiteBrush}" BorderThickness="1" CornerRadius="0">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!-- Magnifying Glass Icon (Text representation for Y2K) -->
+            <TextBlock Text="[?]" Foreground="{StaticResource ChromeHighlightBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+            
+            <TextBox x:Name="SearchBox" Grid.Column="1" Background="Transparent" Foreground="{StaticResource PureWhiteBrush}" 
+                     BorderThickness="0" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="14"
+                     TextChanged="SearchBox_TextChanged"/>
+            
+            <TextBlock x:Name="PlaceholderText" Grid.Column="1" Text="SEARCH..." Foreground="{StaticResource MetallicGreyBrush}" 
+                       VerticalAlignment="Center" Margin="3,0,0,0" IsHitTestVisible="False" FontFamily="Consolas" FontSize="14">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+    </Border>
+</UserControl>

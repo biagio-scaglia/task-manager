@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManager.App"
         xmlns:viewmodels="clr-namespace:TaskManager.App.ViewModels"
+        xmlns:controls="clr-namespace:TaskManager.App.Controls"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
-        Title="DEV MGR [Y2K]" Height="700" Width="1000"
+        Title="DEV MGR [Y2K]" Height="700" Width="1000" MinWidth="800" MinHeight="600"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen">
@@ -121,7 +122,14 @@
 
                                 <!-- PORTS VIEW -->
                                 <Border BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="1" Visibility="{Binding IsPortsViewVisible, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <controls:Y2KSearchBar SearchText="{Binding SearchQuery, Mode=TwoWay}" Margin="10,10,10,0"/>
+
+                                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                                         <ItemsControl ItemsSource="{Binding OpenPorts}" Margin="10">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -153,11 +161,19 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
+                                    </Grid>
                                 </Border>
 
                                 <!-- DOCKER VIEW -->
                                 <Border BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="1" Visibility="{Binding IsDockerViewVisible, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <controls:Y2KSearchBar SearchText="{Binding SearchQuery, Mode=TwoWay}" Margin="10,10,10,0"/>
+
+                                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                                         <ItemsControl ItemsSource="{Binding DockerContainers}" Margin="10">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -180,6 +196,7 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
+                                    </Grid>
                                 </Border>
                             </Grid>
 
