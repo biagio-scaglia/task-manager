@@ -55,7 +55,7 @@
                 </Grid>
 
                 <!-- Background Image (shadow.png) behind Glass -->
-                <Image Grid.Row="1" Source="pack://application:,,,/Assets/shadow.png" Stretch="UniformToFill" VerticalAlignment="Top" Margin="0,-150,0,0" Opacity="0.1"/>
+                <Image Grid.Row="1" Source="pack://application:,,,/Assets/shadow.png" Stretch="UniformToFill" VerticalAlignment="Top" Margin="0,-350,0,0" Opacity="0.1"/>
 
                 <!-- Main Content Area with Glass Panel -->
                 <Border Grid.Row="1" Style="{StaticResource Y2KGlassPanel}" Margin="15">
@@ -108,7 +108,7 @@
                                                          Background="{StaticResource GraphiteBrush}" Foreground="{StaticResource SoftWhiteBrush}" 
                                                          BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="1"/>
                                             <TextBlock Text="{Binding CurrentSystemStats.RamUsagePercentage, StringFormat={}{0}%}" 
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource PureWhiteBrush}" FontWeight="Bold"/>
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource DeepBlackBrush}" FontWeight="Bold"/>
                                         </Grid>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                             <TextBlock Text="{Binding CurrentSystemStats.UsedRamGB}" Foreground="{StaticResource PureWhiteBrush}" />
