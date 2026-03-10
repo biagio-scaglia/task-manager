@@ -17,7 +17,7 @@
             
             <TextBox x:Name="SearchBox" Grid.Column="1" Background="Transparent" Foreground="{DynamicResource PureWhiteBrush}" 
                      BorderThickness="0" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="14"
-                     TextChanged="SearchBox_TextChanged"/>
+                     Text="{Binding SearchText, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
             
             <TextBlock x:Name="PlaceholderText" Grid.Column="1" Text="SEARCH..." Foreground="{DynamicResource MetallicGreyBrush}" 
                        VerticalAlignment="Center" Margin="3,0,0,0" IsHitTestVisible="False" FontFamily="Consolas" FontSize="14">

@@ -16,23 +16,8 @@ public partial class Y2KSearchBar : UserControl
         set { SetValue(SearchTextProperty, value); }
     }
 
-    public static readonly RoutedEvent SearchTextChangedEvent =
-        EventManager.RegisterRoutedEvent("SearchTextChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Y2KSearchBar));
-
-    public event RoutedEventHandler SearchTextChanged
-    {
-        add { AddHandler(SearchTextChangedEvent, value); }
-        remove { RemoveHandler(SearchTextChangedEvent, value); }
-    }
-
     public Y2KSearchBar()
     {
         InitializeComponent();
-    }
-
-    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        SearchText = SearchBox.Text;
-        RaiseEvent(new RoutedEventArgs(SearchTextChangedEvent));
     }
 }
