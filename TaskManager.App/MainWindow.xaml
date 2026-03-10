@@ -10,7 +10,7 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
-        Title="DEV MGR [Y2K]" Icon="Assets/logo.ico" Height="700" Width="1000" MinWidth="800" MinHeight="600"
+        Title="DEV MGR [Y2K]" Height="700" Width="1000" MinWidth="800" MinHeight="600"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen">
