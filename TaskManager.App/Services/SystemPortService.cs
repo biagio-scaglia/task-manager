@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Management;
 using TaskManager.App.Models;
 
 namespace TaskManager.App.Services;
@@ -52,6 +53,7 @@ public class SystemPortService
                         if (portNumber > 0 && int.TryParse(match.Groups[5].Value, out int pid) && pid > 0)
                         {
                             string processName = GetProcessNameByPid(pid);
+                            string executablePath = GetExecutablePath(pid);
                             
                             ports.Add(new SystemPort
                             {
@@ -60,7 +62,8 @@ public class SystemPortService
                                 PortNumber = portNumber,
                                 State = match.Groups[4].Value,
                                 ProcessId = pid,
-                                ProcessName = processName
+                                ProcessName = processName,
+                                ExecutablePath = executablePath
                             });
                         }
                     }
@@ -99,5 +102,27 @@ public class SystemPortService
         {
             return "Unknown";
         }
+    }
+
+    private string GetExecutablePath(int pid)
+    {
+        try
+        {
+            using var searcher = new ManagementObjectSearcher($"SELECT ExecutablePath FROM Win32_Process WHERE ProcessId = {pid}");
+            using var results = searcher.Get();
+            foreach (var result in results)
+            {
+                var path = result["ExecutablePath"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    return path;
+                }
+            }
+        }
+        catch
+        {
+            // Handle WMI access denied, missing privileges or closed instances smoothly
+        }
+        return "Access Denied / System";
     }
 }

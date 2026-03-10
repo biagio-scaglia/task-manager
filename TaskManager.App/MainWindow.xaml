@@ -10,7 +10,7 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
-        Title="DEV MGR [Y2K]" Height="700" Width="1000" MinWidth="800" MinHeight="600"
+        Title="DEV MGR [Y2K]" Icon="Assets/logo.ico" Height="700" Width="1000" MinWidth="800" MinHeight="600"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen">
@@ -211,15 +211,19 @@
                                                                 <ColumnDefinition Width="*"/>
                                                                 <ColumnDefinition Width="100"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="{Binding Protocol}" Grid.Column="0" Foreground="{DynamicResource SoftWhiteBrush}"/>
-                                                            <TextBlock Text="{Binding PortNumber}" Grid.Column="1" Foreground="{DynamicResource PureWhiteBrush}" FontWeight="Bold"/>
-                                                            <TextBlock Text="{Binding LocalAddress}" Grid.Column="2" Foreground="{DynamicResource ChromeHighlightBrush}"/>
-                                                            <TextBlock Grid.Column="3" Foreground="{DynamicResource ChromeHighlightBrush}">
-                                                                <Run Text="{Binding ProcessName}" />
-                                                                <Run Text=" (PID: " />
-                                                                <Run Text="{Binding ProcessId}" />
-                                                                <Run Text=")" />
-                                                            </TextBlock>
+                                                            <TextBlock Text="{Binding Protocol}" Grid.Column="0" Foreground="{DynamicResource SoftWhiteBrush}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding PortNumber}" Grid.Column="1" Foreground="{DynamicResource PureWhiteBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding LocalAddress}" Grid.Column="2" Foreground="{DynamicResource ChromeHighlightBrush}" VerticalAlignment="Center"/>
+                                                            
+                                                            <StackPanel Grid.Column="3" VerticalAlignment="Center">
+                                                                <TextBlock Foreground="{DynamicResource ChromeHighlightBrush}">
+                                                                    <Run Text="{Binding ProcessName}" FontWeight="Bold" />
+                                                                    <Run Text=" (PID: " />
+                                                                    <Run Text="{Binding ProcessId}" />
+                                                                    <Run Text=")" />
+                                                                </TextBlock>
+                                                                <TextBlock Text="{Binding ExecutablePath}" Foreground="{DynamicResource SoftWhiteBrush}" FontSize="10" TextTrimming="CharacterEllipsis" ToolTip="{Binding ExecutablePath}" Margin="0,2,20,0"/>
+                                                            </StackPanel>
                                                             <Button Content="KILL" Grid.Column="4" Style="{DynamicResource Y2KButton}" Padding="5" Foreground="#FF0000" Background="Transparent" BorderBrush="#FF0000"
                                                                     Command="{Binding DataContext.KillPortProcessCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                                     CommandParameter="{Binding}"/>
@@ -258,11 +262,21 @@
                                                                 <ColumnDefinition Width="200"/>
                                                                 <ColumnDefinition Width="150"/>
                                                                 <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="150"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="{Binding Names}" Grid.Column="0" Foreground="{DynamicResource PureWhiteBrush}" FontWeight="Bold"/>
-                                                            <TextBlock Text="{Binding Image}" Grid.Column="1" Foreground="{DynamicResource ChromeHighlightBrush}"/>
-                                                            <TextBlock Text="{Binding Status}" Grid.Column="2" Foreground="{DynamicResource SoftWhiteBrush}"/>
-                                                            <TextBlock Text="{Binding Ports}" Grid.Column="3" Foreground="{DynamicResource ChromeHighlightBrush}" TextWrapping="WrapWithOverflow"/>
+                                                            <TextBlock Text="{Binding Names}" Grid.Column="0" Foreground="{DynamicResource PureWhiteBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding Image}" Grid.Column="1" Foreground="{DynamicResource ChromeHighlightBrush}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding Status}" Grid.Column="2" Foreground="{DynamicResource SoftWhiteBrush}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding Ports}" Grid.Column="3" Foreground="{DynamicResource ChromeHighlightBrush}" TextWrapping="WrapWithOverflow" VerticalAlignment="Center"/>
+                                                            
+                                                            <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                                <Button Content="START" Style="{DynamicResource Y2KButton}" Padding="5,2" Margin="0,0,5,0" Foreground="#44FF44" Background="Transparent" BorderBrush="#44FF44"
+                                                                        Command="{Binding DataContext.StartDockerContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                                                                <Button Content="STOP" Style="{DynamicResource Y2KButton}" Padding="5,2" Margin="0,0,5,0" Foreground="#FFaa44" Background="Transparent" BorderBrush="#FFaa44"
+                                                                        Command="{Binding DataContext.StopDockerContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                                                                <Button Content="DEL" Style="{DynamicResource Y2KButton}" Padding="5,2" Foreground="#FF0000" Background="Transparent" BorderBrush="#FF0000"
+                                                                        Command="{Binding DataContext.RemoveDockerContainerCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                                                            </StackPanel>
                                                         </Grid>
                                                         <Border BorderBrush="{DynamicResource DeepBlackBrush}" BorderThickness="0,0,0,1"/>
                                                     </StackPanel>

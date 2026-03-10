@@ -62,4 +62,40 @@ public class DockerService
 
         return containers;
     }
+
+    public bool StartContainer(string containerId)
+    {
+        return RunDockerCommand($"start {containerId}");
+    }
+
+    public bool StopContainer(string containerId)
+    {
+        return RunDockerCommand($"stop {containerId}");
+    }
+
+    public bool RemoveContainer(string containerId)
+    {
+        return RunDockerCommand($"rm -f {containerId}");
+    }
+
+    private bool RunDockerCommand(string args)
+    {
+        try
+        {
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = "docker",
+                Arguments = args,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var process = Process.Start(processStartInfo);
+            process?.WaitForExit();
+            return process?.ExitCode == 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

@@ -10,6 +10,7 @@ public class SystemPort
     public required string State { get; set; }
     public required int ProcessId { get; set; }
     public string ProcessName { get; set; } = string.Empty;
+    public string ExecutablePath { get; set; } = string.Empty;
 }
 
 public class DockerContainer

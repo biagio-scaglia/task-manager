@@ -309,5 +309,35 @@ public partial class MainViewModel : ObservableObject
             // User likely cancelled the UAC prompt
         }
     }
+
+    [RelayCommand]
+    private async Task StartDockerContainerAsync(DockerContainer container)
+    {
+        if (container != null)
+        {
+            bool success = dockerService.StartContainer(container.Id);
+            if (success) await LoadDockerViewAsync();
+        }
+    }
+
+    [RelayCommand]
+    private async Task StopDockerContainerAsync(DockerContainer container)
+    {
+        if (container != null)
+        {
+            bool success = dockerService.StopContainer(container.Id);
+            if (success) await LoadDockerViewAsync();
+        }
+    }
+
+    [RelayCommand]
+    private async Task RemoveDockerContainerAsync(DockerContainer container)
+    {
+        if (container != null)
+        {
+            bool success = dockerService.RemoveContainer(container.Id);
+            if (success) await LoadDockerViewAsync();
+        }
+    }
 }
 
