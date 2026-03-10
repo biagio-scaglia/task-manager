@@ -1,5 +1,8 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Security.Principal;
 using System.Timers;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TaskManager.App.Models;
@@ -12,6 +15,8 @@ public partial class MainViewModel : ObservableObject
     private readonly SystemPortService portService;
     private readonly DockerService dockerService;
     private readonly SystemMonitorService monitorService;
+    private readonly ThemeService themeService;
+    private readonly HostsFileService hostsFileService;
     private readonly System.Timers.Timer statsTimer;
 
     [ObservableProperty]
@@ -24,19 +29,22 @@ public partial class MainViewModel : ObservableObject
     private ObservableCollection<DockerContainer> dockerContainers;
 
     [ObservableProperty]
+    private ObservableCollection<HostEntry> hostEntries;
+
+    [ObservableProperty]
     private SystemStats currentSystemStats;
 
     [ObservableProperty]
-    private bool isPortsViewVisible;
+    private AppView currentView;
 
     [ObservableProperty]
-    private bool isDockerViewVisible;
-
-    [ObservableProperty]
-    private bool isSystemViewVisible;
+    private bool isAdmin;
 
     [ObservableProperty]
     private string searchQuery = string.Empty;
+
+    [ObservableProperty]
+    private bool isLoading;
 
     partial void OnSearchQueryChanged(string value)
     {
@@ -48,16 +56,22 @@ public partial class MainViewModel : ObservableObject
         portService = new SystemPortService();
         dockerService = new DockerService();
         monitorService = new SystemMonitorService();
+        themeService = new ThemeService();
+        hostsFileService = new HostsFileService();
 
         OpenPorts = new ObservableCollection<SystemPort>();
         DockerContainers = new ObservableCollection<DockerContainer>();
+        HostEntries = new ObservableCollection<HostEntry>();
         CurrentSystemStats = new SystemStats();
 
         currentViewTitle = "// SYSTEM STATS";
-        
-        IsSystemViewVisible = true;
-        IsPortsViewVisible = false;
-        IsDockerViewVisible = false;
+        CurrentView = AppView.System;
+
+        using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+        {
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+            IsAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
 
         statsTimer = new System.Timers.Timer(2000);
         statsTimer.Elapsed += StatsTimer_Elapsed;
@@ -79,9 +93,7 @@ public partial class MainViewModel : ObservableObject
     private void LoadSystemView()
     {
         CurrentViewTitle = "// SYSTEM STATS";
-        IsSystemViewVisible = true;
-        IsPortsViewVisible = false;
-        IsDockerViewVisible = false;
+        CurrentView = AppView.System;
         
         CurrentSystemStats = monitorService.GetStats();
     }
@@ -90,10 +102,9 @@ public partial class MainViewModel : ObservableObject
     private async Task LoadPortsViewAsync()
     {
         CurrentViewTitle = "// OPEN PORTS DETECTED";
-        IsSystemViewVisible = false;
-        IsPortsViewVisible = true;
-        IsDockerViewVisible = false;
+        CurrentView = AppView.Ports;
 
+        IsLoading = true;
         OpenPorts.Clear();
         string query = SearchQuery?.ToLower() ?? string.Empty;
         var ports = await portService.GetOpenPortsAsync();
@@ -108,16 +119,16 @@ public partial class MainViewModel : ObservableObject
                 OpenPorts.Add(p);
             }
         }
+        IsLoading = false;
     }
 
     [RelayCommand]
     private async Task LoadDockerViewAsync()
     {
         CurrentViewTitle = "// DOCKER CONTAINERS";
-        IsSystemViewVisible = false;
-        IsPortsViewVisible = false;
-        IsDockerViewVisible = true;
+        CurrentView = AppView.Docker;
 
+        IsLoading = true;
         DockerContainers.Clear();
         string query = SearchQuery?.ToLower() ?? string.Empty;
         var containers = await dockerService.GetContainersAsync();
@@ -132,14 +143,103 @@ public partial class MainViewModel : ObservableObject
                 DockerContainers.Add(c);
             }
         }
+        IsLoading = false;
     }
 
     [RelayCommand]
     private async Task RefreshCurrentViewAsync()
     {
-        if (IsPortsViewVisible) await LoadPortsViewAsync();
-        else if (IsDockerViewVisible) await LoadDockerViewAsync();
-        else LoadSystemView();
+        switch (CurrentView)
+        {
+            case AppView.Ports:
+                await LoadPortsViewAsync();
+                break;
+            case AppView.Docker:
+                await LoadDockerViewAsync();
+                break;
+            case AppView.Settings:
+                LoadSettingsView();
+                break;
+            case AppView.Hosts:
+                await LoadHostsViewAsync();
+                break;
+            case AppView.Startup:
+                LoadStartupView();
+                break;
+            case AppView.Info:
+                LoadInfoView();
+                break;
+            default:
+                LoadSystemView();
+                break;
+        }
+    }
+
+    [RelayCommand]
+    private void LoadSettingsView()
+    {
+        CurrentViewTitle = "// SYSTEM SETTINGS";
+        CurrentView = AppView.Settings;
+    }
+
+    [RelayCommand]
+    private void LoadInfoView()
+    {
+        CurrentViewTitle = "// INFO & DOCUMENTATION";
+        CurrentView = AppView.Info;
+    }
+
+    [RelayCommand]
+    private async Task LoadHostsViewAsync()
+    {
+        CurrentViewTitle = "// HOSTS FILE ENTRIES";
+        CurrentView = AppView.Hosts;
+
+        IsLoading = true;
+        HostEntries.Clear();
+        string query = SearchQuery?.ToLower() ?? string.Empty;
+
+        var entries = await hostsFileService.GetHostsEntriesAsync();
+        
+        foreach (var entry in entries)
+        {
+            if (entry.IsCommentOnly && !string.IsNullOrWhiteSpace(query))
+                continue; // Skip comments if searching
+
+            if (string.IsNullOrWhiteSpace(query) || 
+                entry.Hostname.ToLower().Contains(query) || 
+                entry.IPAddress.Contains(query))
+            {
+                HostEntries.Add(entry);
+            }
+        }
+        IsLoading = false;
+    }
+
+    [RelayCommand]
+    private async Task SaveHostsFileAsync()
+    {
+        if (IsAdmin)
+        {
+            await hostsFileService.SaveHostsEntriesAsync(HostEntries);
+            await LoadHostsViewAsync();
+        }
+    }
+
+    [RelayCommand]
+    private void LoadStartupView()
+    {
+        CurrentViewTitle = "// STARTUP MANAGER (WIP)";
+        CurrentView = AppView.Startup;
+    }
+
+    [RelayCommand]
+    private void ChangeTheme(string themeName)
+    {
+        if (!string.IsNullOrWhiteSpace(themeName))
+        {
+            themeService.ChangeTheme(themeName);
+        }
     }
 
     [RelayCommand]
@@ -151,4 +251,27 @@ public partial class MainViewModel : ObservableObject
             await LoadPortsViewAsync(); 
         }
     }
+
+    [RelayCommand]
+    private void RestartAsAdmin()
+    {
+        var exeName = Process.GetCurrentProcess().MainModule?.FileName;
+        if (exeName == null) return;
+        
+        ProcessStartInfo startInfo = new ProcessStartInfo(exeName)
+        {
+            UseShellExecute = true,
+            Verb = "runas"
+        };
+        try
+        {
+            Process.Start(startInfo);
+            Application.Current.Shutdown();
+        }
+        catch 
+        {
+            // User likely cancelled the UAC prompt
+        }
+    }
 }
+

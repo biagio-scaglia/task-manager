@@ -6,20 +6,20 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="300">
-    <Border Background="{StaticResource DeepBlackBrush}" BorderBrush="{StaticResource SoftWhiteBrush}" BorderThickness="1" CornerRadius="0">
+    <Border Background="{DynamicResource DeepBlackBrush}" BorderBrush="{DynamicResource SoftWhiteBrush}" BorderThickness="1" CornerRadius="0">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <!-- Magnifying Glass Icon (Material Vector) -->
-            <iconPacks:PackIconMaterial Kind="Magnify" Foreground="{StaticResource ChromeHighlightBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <iconPacks:PackIconMaterial Kind="Magnify" Foreground="{DynamicResource ChromeHighlightBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             
-            <TextBox x:Name="SearchBox" Grid.Column="1" Background="Transparent" Foreground="{StaticResource PureWhiteBrush}" 
+            <TextBox x:Name="SearchBox" Grid.Column="1" Background="Transparent" Foreground="{DynamicResource PureWhiteBrush}" 
                      BorderThickness="0" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="14"
                      TextChanged="SearchBox_TextChanged"/>
             
-            <TextBlock x:Name="PlaceholderText" Grid.Column="1" Text="SEARCH..." Foreground="{StaticResource MetallicGreyBrush}" 
+            <TextBlock x:Name="PlaceholderText" Grid.Column="1" Text="SEARCH..." Foreground="{DynamicResource MetallicGreyBrush}" 
                        VerticalAlignment="Center" Margin="3,0,0,0" IsHitTestVisible="False" FontFamily="Consolas" FontSize="14">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">

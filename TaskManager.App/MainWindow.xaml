@@ -1,10 +1,11 @@
-﻿<Window x:Class="TaskManager.App.MainWindow"
+<Window x:Class="TaskManager.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManager.App"
         xmlns:viewmodels="clr-namespace:TaskManager.App.ViewModels"
+        xmlns:models="clr-namespace:TaskManager.App.Models"
         xmlns:controls="clr-namespace:TaskManager.App.Controls"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
@@ -19,9 +20,9 @@
     </WindowChrome.WindowChrome>
 
     <!-- Base Grid for allowing transparency dropshadow effect if needed. DeepBlackBackground -->
-    <Grid Background="{StaticResource DeepBlackBrush}">
+    <Grid Background="{DynamicResource DeepBlackBrush}">
         <!-- Border for the whole Window -->
-        <Border BorderBrush="{StaticResource DarkChromeBrush}" BorderThickness="1">
+        <Border BorderBrush="{DynamicResource DarkChromeBrush}" BorderThickness="1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40" />
@@ -33,7 +34,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Titlebar Area -->
-                <Grid Grid.Row="0" Background="{StaticResource GraphiteBrush}">
+                <Grid Grid.Row="0" Background="{DynamicResource GraphiteBrush}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -41,26 +42,34 @@
 
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0,0,0">
                         <!-- Icon representation using text bracket -->
-                        <TextBlock Text="[>]" Foreground="{StaticResource ChromeHighlightBrush}" FontWeight="Bold" Margin="0,0,10,0" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock Text="DEV MGR | PORT &amp; DOCKER CONTROL" FontWeight="Bold" Foreground="{StaticResource PureWhiteBrush}" FontSize="16"/>
-                        <TextBlock Text=" [SYSTEM O.S.]" Foreground="{StaticResource ChromeHighlightBrush}" Margin="10,0,0,0" FontSize="12" VerticalAlignment="Bottom" Padding="0,0,0,2"/>
+                        <TextBlock Text="[>]" Foreground="{DynamicResource ChromeHighlightBrush}" FontWeight="Bold" Margin="0,0,10,0" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock Text="DEV MGR | PORT &amp; DOCKER CONTROL" FontWeight="Bold" Foreground="{DynamicResource PureWhiteBrush}" FontSize="16"/>
+                        <TextBlock Text=" [SYSTEM O.S.]" Foreground="{DynamicResource ChromeHighlightBrush}" Margin="10,0,0,0" FontSize="12" VerticalAlignment="Bottom" Padding="0,0,0,2"/>
+                        
+                        <!-- Admin Check -->
+                        <Button Content="[ RESTART AS ADMIN ]" Command="{Binding RestartAsAdminCommand}" Style="{DynamicResource Y2KButton}"
+                                Foreground="#FF4444" Background="Transparent" BorderThickness="0" Padding="0" WindowChrome.IsHitTestVisibleInChrome="True"
+                                FontWeight="Bold" FontSize="12" VerticalAlignment="Bottom" Margin="15,0,0,0"
+                                Visibility="{Binding IsAdmin, Converter={x:Static local:Converters.InverseBooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="[ ADMIN MODE ]" Foreground="#44FF44" FontWeight="Bold" FontSize="12" VerticalAlignment="Bottom" Margin="15,0,0,0" Padding="0,0,0,2"
+                                   Visibility="{Binding IsAdmin, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}"/>
                     </StackPanel>
 
                     <!-- Window Controls -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <Button Content="-" Style="{StaticResource Y2KButton}" Width="40" Padding="0" Click="MinimizeButton_Click" Background="Transparent" BorderThickness="0" Foreground="{StaticResource ChromeHighlightBrush}" WindowChrome.IsHitTestVisibleInChrome="True"/>
-                        <Button Content="O" Style="{StaticResource Y2KButton}" Width="40" Padding="0" Click="MaximizeButton_Click" Background="Transparent" BorderThickness="0" Foreground="{StaticResource ChromeHighlightBrush}" WindowChrome.IsHitTestVisibleInChrome="True"/>
-                        <Button Content="X" Style="{StaticResource Y2KButton}" Width="40" Padding="0" Click="CloseButton_Click" Background="Transparent" BorderThickness="0" Foreground="#FF3333" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                        <Button Content="-" Style="{DynamicResource Y2KButton}" Width="40" Padding="0" Click="MinimizeButton_Click" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource ChromeHighlightBrush}" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                        <Button Content="O" Style="{DynamicResource Y2KButton}" Width="40" Padding="0" Click="MaximizeButton_Click" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource ChromeHighlightBrush}" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                        <Button Content="X" Style="{DynamicResource Y2KButton}" Width="40" Padding="0" Click="CloseButton_Click" Background="Transparent" BorderThickness="0" Foreground="#FF3333" WindowChrome.IsHitTestVisibleInChrome="True"/>
                     </StackPanel>
                     
-                    <Border BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="0,0,0,1" Grid.ColumnSpan="2"/>
+                    <Border BorderBrush="{DynamicResource MetallicGreyBrush}" BorderThickness="0,0,0,1" Grid.ColumnSpan="2"/>
                 </Grid>
 
                 <!-- Background Image (shadow.png) behind Glass -->
                 <Image Grid.Row="1" Source="pack://application:,,,/Assets/shadow.png" Stretch="UniformToFill" VerticalAlignment="Top" Margin="0,-350,0,0" Opacity="0.1"/>
 
                 <!-- Main Content Area with Glass Panel -->
-                <Border Grid.Row="1" Style="{StaticResource Y2KGlassPanel}" Margin="15">
+                <Border Grid.Row="1" Style="{DynamicResource Y2KGlassPanel}" Margin="15">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200" />
@@ -73,37 +82,66 @@
 
                         <!-- Sidebar -->
                         <StackPanel Grid.Column="0" Margin="10">
-                            <Button Command="{Binding LoadSystemViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding IsSystemViewVisible, Converter={x:Static local:Converters.ActiveForegroundConverter}}">
+                            <Button Command="{Binding LoadSystemViewCommand}" Style="{DynamicResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding CurrentView, Converter={x:Static local:Converters.EnumToActiveForegroundConverter}, ConverterParameter={x:Static models:AppView.System}}">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconMaterial Kind="MonitorDashboard" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                     <TextBlock Text="SYSTEM" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                 </StackPanel>
                             </Button>
                             
-                            <Button Command="{Binding LoadPortsViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding IsPortsViewVisible, Converter={x:Static local:Converters.ActiveForegroundConverter}}">
+                            <Button Command="{Binding LoadPortsViewCommand}" Style="{DynamicResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding CurrentView, Converter={x:Static local:Converters.EnumToActiveForegroundConverter}, ConverterParameter={x:Static models:AppView.Ports}}">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconMaterial Kind="Lan" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                     <TextBlock Text="PORTS" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                 </StackPanel>
                             </Button>
                             
-                            <Button Command="{Binding LoadDockerViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding IsDockerViewVisible, Converter={x:Static local:Converters.ActiveForegroundConverter}}">
+                            <Button Command="{Binding LoadDockerViewCommand}" Style="{DynamicResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding CurrentView, Converter={x:Static local:Converters.EnumToActiveForegroundConverter}, ConverterParameter={x:Static models:AppView.Docker}}">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconMaterial Kind="Docker" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                     <TextBlock Text="DOCKER" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                                 </StackPanel>
                             </Button>
                             
-                            <Button Command="{Binding RefreshCurrentViewCommand}" Style="{StaticResource Y2KButton}" Margin="0,30,0,0" HorizontalContentAlignment="Left" Foreground="{StaticResource PureWhiteBrush}">
+                            <!-- Placeholder buttons for new Tabs (HOSTS, STARTUP) -->
+                            <Button Command="{Binding LoadHostsViewCommand}" Style="{DynamicResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding CurrentView, Converter={x:Static local:Converters.EnumToActiveForegroundConverter}, ConverterParameter={x:Static models:AppView.Hosts}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="Earth" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="HOSTS" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Command="{Binding LoadStartupViewCommand}" Style="{DynamicResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding CurrentView, Converter={x:Static local:Converters.EnumToActiveForegroundConverter}, ConverterParameter={x:Static models:AppView.Startup}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="RocketLaunch" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="STARTUP" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Command="{Binding LoadSettingsViewCommand}" Style="{DynamicResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding CurrentView, Converter={x:Static local:Converters.EnumToActiveForegroundConverter}, ConverterParameter={x:Static models:AppView.Settings}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="Cog" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="SETTINGS" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Command="{Binding LoadInfoViewCommand}" Style="{DynamicResource Y2KButton}" Margin="0,0,0,10" HorizontalContentAlignment="Left" Foreground="{Binding CurrentView, Converter={x:Static local:Converters.EnumToActiveForegroundConverter}, ConverterParameter={x:Static models:AppView.Info}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="Information" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="INFO" VerticalAlignment="Center" FontWeight="Bold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Command="{Binding RefreshCurrentViewCommand}" Style="{DynamicResource Y2KButton}" Margin="0,30,0,0" HorizontalContentAlignment="Left" Foreground="{DynamicResource PureWhiteBrush}">
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconMaterial Kind="Refresh" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                    <TextBlock Text="REFRESH" VerticalAlignment="Center" FontWeight="Bold" Foreground="{StaticResource PureWhiteBrush}"/>
+                                    <TextBlock Text="REFRESH" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource PureWhiteBrush}"/>
                                 </StackPanel>
                             </Button>
                         </StackPanel>
 
                         <!-- Divider -->
-                        <Border Grid.Column="1" Background="{StaticResource MetallicGreyBrush}"/>
+                        <Border Grid.Column="1" Background="{DynamicResource MetallicGreyBrush}"/>
 
                         <!-- Main View Area -->
                         <Grid Grid.Column="2" Margin="15">
@@ -112,48 +150,55 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             
-                            <TextBlock Text="{Binding CurrentViewTitle}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource ChromeHighlightBrush}"/>
+                            <TextBlock Text="{Binding CurrentViewTitle}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource ChromeHighlightBrush}"/>
                             
                             <Grid Grid.Row="1" Margin="0,15,0,0">
-                                <!-- SYSTEM STATS VIEW -->
-                                <Border BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="1" Visibility="{Binding IsSystemViewVisible, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
+                                <!-- SYSTEM VIEW -->
+                                <Grid Visibility="{Binding CurrentView, Converter={x:Static local:Converters.EnumToVisibilityConverter}, ConverterParameter={x:Static models:AppView.System}}">
+                                    <!-- CPU / RAM Monitors etc... -->
                                     <StackPanel Margin="20">
-                                        <TextBlock Text="[ CPU USAGE ]" Foreground="{StaticResource ChromeHighlightBrush}" Margin="0,0,0,5"/>
+                                        <TextBlock Text="[ CPU USAGE ]" Foreground="{DynamicResource ChromeHighlightBrush}" Margin="0,0,0,5"/>
                                         <Grid Height="30" Margin="0,0,0,20">
                                             <ProgressBar Minimum="0" Maximum="100" Value="{Binding CurrentSystemStats.CpuUsagePercentage}" 
-                                                         Background="{StaticResource GraphiteBrush}" Foreground="{StaticResource SoftWhiteBrush}" 
-                                                         BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="1"/>
+                                                         Background="{DynamicResource GraphiteBrush}" Foreground="{DynamicResource SoftWhiteBrush}" 
+                                                         BorderBrush="{DynamicResource MetallicGreyBrush}" BorderThickness="1"/>
                                             <TextBlock Text="{Binding CurrentSystemStats.CpuUsagePercentage, StringFormat={}{0}%}" 
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource PureWhiteBrush}" FontWeight="Bold"/>
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource PureWhiteBrush}" FontWeight="Bold"/>
                                         </Grid>
 
-                                        <TextBlock Text="[ RAM USAGE ]" Foreground="{StaticResource ChromeHighlightBrush}" Margin="0,0,0,5"/>
+                                        <TextBlock Text="[ RAM USAGE ]" Foreground="{DynamicResource ChromeHighlightBrush}" Margin="0,0,0,5"/>
                                         <Grid Height="30" Margin="0,0,0,5">
                                             <ProgressBar Minimum="0" Maximum="100" Value="{Binding CurrentSystemStats.RamUsagePercentage}" 
-                                                         Background="{StaticResource GraphiteBrush}" Foreground="{StaticResource SoftWhiteBrush}" 
-                                                         BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="1"/>
+                                                         Background="{DynamicResource GraphiteBrush}" Foreground="{DynamicResource SoftWhiteBrush}" 
+                                                         BorderBrush="{DynamicResource MetallicGreyBrush}" BorderThickness="1"/>
                                             <TextBlock Text="{Binding CurrentSystemStats.RamUsagePercentage, StringFormat={}{0}%}" 
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource DeepBlackBrush}" FontWeight="Bold"/>
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource DeepBlackBrush}" FontWeight="Bold"/>
                                         </Grid>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                            <TextBlock Text="{Binding CurrentSystemStats.UsedRamGB}" Foreground="{StaticResource PureWhiteBrush}" />
-                                            <TextBlock Text=" GB / " Foreground="{StaticResource ChromeHighlightBrush}" />
-                                            <TextBlock Text="{Binding CurrentSystemStats.TotalRamGB}" Foreground="{StaticResource PureWhiteBrush}" />
-                                            <TextBlock Text=" GB" Foreground="{StaticResource ChromeHighlightBrush}" />
+                                            <TextBlock Text="{Binding CurrentSystemStats.UsedRamGB}" Foreground="{DynamicResource PureWhiteBrush}" />
+                                            <TextBlock Text=" GB / " Foreground="{DynamicResource ChromeHighlightBrush}" />
+                                            <TextBlock Text="{Binding CurrentSystemStats.TotalRamGB}" Foreground="{DynamicResource PureWhiteBrush}" />
+                                            <TextBlock Text=" GB" Foreground="{DynamicResource ChromeHighlightBrush}" />
                                         </StackPanel>
                                     </StackPanel>
-                                </Border>
+                                </Grid>
 
                                 <!-- PORTS VIEW -->
-                                <Border BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="1" Visibility="{Binding IsPortsViewVisible, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-                                        <controls:Y2KSearchBar SearchText="{Binding SearchQuery, Mode=TwoWay}" Margin="10,10,10,0"/>
+                                <Grid Visibility="{Binding CurrentView, Converter={x:Static local:Converters.EnumToVisibilityConverter}, ConverterParameter={x:Static models:AppView.Ports}}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <controls:Y2KSearchBar SearchText="{Binding SearchQuery, Mode=TwoWay}" Margin="10,10,10,0"/>
 
-                                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                    <!-- LOADING OVERLAY -->
+                                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding IsLoading, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="[ SCANNING PORTS... ]" Foreground="{DynamicResource ChromeHighlightBrush}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="PLEASE WAIT" Foreground="{DynamicResource SoftWhiteBrush}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- SCROLL LIST -->
+                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding IsLoading, Converter={x:Static local:Converters.InverseBooleanToVisibilityConverter}}">
                                         <ItemsControl ItemsSource="{Binding OpenPorts}" Margin="10">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -166,38 +211,43 @@
                                                                 <ColumnDefinition Width="*"/>
                                                                 <ColumnDefinition Width="100"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="{Binding Protocol}" Grid.Column="0" Foreground="{StaticResource SoftWhiteBrush}"/>
-                                                            <TextBlock Text="{Binding PortNumber}" Grid.Column="1" Foreground="{StaticResource PureWhiteBrush}" FontWeight="Bold"/>
-                                                            <TextBlock Text="{Binding LocalAddress}" Grid.Column="2" Foreground="{StaticResource ChromeHighlightBrush}"/>
-                                                            <TextBlock Grid.Column="3" Foreground="{StaticResource ChromeHighlightBrush}">
+                                                            <TextBlock Text="{Binding Protocol}" Grid.Column="0" Foreground="{DynamicResource SoftWhiteBrush}"/>
+                                                            <TextBlock Text="{Binding PortNumber}" Grid.Column="1" Foreground="{DynamicResource PureWhiteBrush}" FontWeight="Bold"/>
+                                                            <TextBlock Text="{Binding LocalAddress}" Grid.Column="2" Foreground="{DynamicResource ChromeHighlightBrush}"/>
+                                                            <TextBlock Grid.Column="3" Foreground="{DynamicResource ChromeHighlightBrush}">
                                                                 <Run Text="{Binding ProcessName}" />
                                                                 <Run Text=" (PID: " />
                                                                 <Run Text="{Binding ProcessId}" />
                                                                 <Run Text=")" />
                                                             </TextBlock>
-                                                            <Button Content="KILL" Grid.Column="4" Style="{StaticResource Y2KButton}" Padding="5" Foreground="#FF0000" Background="Transparent" BorderBrush="#FF0000"
+                                                            <Button Content="KILL" Grid.Column="4" Style="{DynamicResource Y2KButton}" Padding="5" Foreground="#FF0000" Background="Transparent" BorderBrush="#FF0000"
                                                                     Command="{Binding DataContext.KillPortProcessCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                                     CommandParameter="{Binding}"/>
                                                         </Grid>
-                                                        <Border BorderBrush="{StaticResource DeepBlackBrush}" BorderThickness="0,0,0,1"/>
+                                                        <Border BorderBrush="{DynamicResource DeepBlackBrush}" BorderThickness="0,0,0,1"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
-                                    </Grid>
-                                </Border>
+                                </Grid>
 
                                 <!-- DOCKER VIEW -->
-                                <Border BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="1" Visibility="{Binding IsDockerViewVisible, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-                                        <controls:Y2KSearchBar SearchText="{Binding SearchQuery, Mode=TwoWay}" Margin="10,10,10,0"/>
+                                <Grid Visibility="{Binding CurrentView, Converter={x:Static local:Converters.EnumToVisibilityConverter}, ConverterParameter={x:Static models:AppView.Docker}}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <controls:Y2KSearchBar SearchText="{Binding SearchQuery, Mode=TwoWay}" Margin="10,10,10,0"/>
 
-                                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                    <!-- LOADING OVERLAY -->
+                                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding IsLoading, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="[ QUERYING DOCKER DAEMON... ]" Foreground="{DynamicResource ChromeHighlightBrush}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="PLEASE WAIT" Foreground="{DynamicResource SoftWhiteBrush}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- SCROLL LIST -->
+                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding IsLoading, Converter={x:Static local:Converters.InverseBooleanToVisibilityConverter}}">
                                         <ItemsControl ItemsSource="{Binding DockerContainers}" Margin="10">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -209,19 +259,111 @@
                                                                 <ColumnDefinition Width="150"/>
                                                                 <ColumnDefinition Width="*"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="{Binding Names}" Grid.Column="0" Foreground="{StaticResource PureWhiteBrush}" FontWeight="Bold"/>
-                                                            <TextBlock Text="{Binding Image}" Grid.Column="1" Foreground="{StaticResource ChromeHighlightBrush}"/>
-                                                            <TextBlock Text="{Binding Status}" Grid.Column="2" Foreground="{StaticResource SoftWhiteBrush}"/>
-                                                            <TextBlock Text="{Binding Ports}" Grid.Column="3" Foreground="{StaticResource ChromeHighlightBrush}" TextWrapping="WrapWithOverflow"/>
+                                                            <TextBlock Text="{Binding Names}" Grid.Column="0" Foreground="{DynamicResource PureWhiteBrush}" FontWeight="Bold"/>
+                                                            <TextBlock Text="{Binding Image}" Grid.Column="1" Foreground="{DynamicResource ChromeHighlightBrush}"/>
+                                                            <TextBlock Text="{Binding Status}" Grid.Column="2" Foreground="{DynamicResource SoftWhiteBrush}"/>
+                                                            <TextBlock Text="{Binding Ports}" Grid.Column="3" Foreground="{DynamicResource ChromeHighlightBrush}" TextWrapping="WrapWithOverflow"/>
                                                         </Grid>
-                                                        <Border BorderBrush="{StaticResource DeepBlackBrush}" BorderThickness="0,0,0,1"/>
+                                                        <Border BorderBrush="{DynamicResource DeepBlackBrush}" BorderThickness="0,0,0,1"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
-                                    </Grid>
-                                </Border>
+                                </Grid>
+
+                                <!-- HOSTS VIEW -->
+                                <Grid Visibility="{Binding CurrentView, Converter={x:Static local:Converters.EnumToVisibilityConverter}, ConverterParameter={x:Static models:AppView.Hosts}}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <controls:Y2KSearchBar SearchText="{Binding SearchQuery, Mode=TwoWay}" Margin="10,10,10,0"/>
+
+                                    <!-- LOADING OVERLAY -->
+                                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding IsLoading, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="[ READING HOSTS FILE... ]" Foreground="{DynamicResource ChromeHighlightBrush}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <!-- SCROLL LIST -->
+                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding IsLoading, Converter={x:Static local:Converters.InverseBooleanToVisibilityConverter}}">
+                                        <ItemsControl ItemsSource="{Binding HostEntries}" Margin="10">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Visibility="{Binding IsCommentOnly, Converter={x:Static local:Converters.InverseBooleanToVisibilityConverter}}">
+                                                        <Grid Margin="0,5">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="50"/>
+                                                                <ColumnDefinition Width="150"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <CheckBox IsChecked="{Binding IsActive}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                                <CheckBox.IsEnabled>
+                                                                    <Binding Path="DataContext.IsAdmin" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                                </CheckBox.IsEnabled>
+                                                            </CheckBox>
+                                                            <TextBox Text="{Binding IPAddress}" Grid.Column="1" Foreground="{DynamicResource PureWhiteBrush}" Background="Transparent" BorderThickness="0" FontFamily="Consolas" VerticalAlignment="Center">
+                                                                <TextBox.IsEnabled>
+                                                                    <Binding Path="DataContext.IsAdmin" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                                </TextBox.IsEnabled>
+                                                            </TextBox>
+                                                            <TextBox Text="{Binding Hostname}" Grid.Column="2" Foreground="{DynamicResource ChromeHighlightBrush}" Background="Transparent" BorderThickness="0" FontFamily="Consolas" VerticalAlignment="Center">
+                                                                <TextBox.IsEnabled>
+                                                                    <Binding Path="DataContext.IsAdmin" RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                                </TextBox.IsEnabled>
+                                                            </TextBox>
+                                                        </Grid>
+                                                        <Border BorderBrush="{DynamicResource DeepBlackBrush}" BorderThickness="0,0,0,1"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+
+                                    <!-- SAVE BUTTON -->
+                                    <Button Grid.Row="2" Content="[ SAVE HOSTS FILE ]" Command="{Binding SaveHostsFileCommand}" Style="{DynamicResource Y2KButton}" Margin="10"
+                                            Visibility="{Binding IsAdmin, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}"/>
+                                </Grid>
+
+                                <!-- STARTUP VIEW EXPERIMENTAL -->
+                                <Grid Visibility="{Binding CurrentView, Converter={x:Static local:Converters.EnumToVisibilityConverter}, ConverterParameter={x:Static models:AppView.Startup}}">
+                                    <StackPanel Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="[ STARTUP MANAGER ]" Foreground="{DynamicResource ChromeHighlightBrush}" Margin="0,0,0,10" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Modulo In Sviluppo (Work In Progress)..." Foreground="{DynamicResource SoftWhiteBrush}" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- SETTINGS VIEW -->
+                                <Grid Visibility="{Binding CurrentView, Converter={x:Static local:Converters.EnumToVisibilityConverter}, ConverterParameter={x:Static models:AppView.Settings}}">
+                                    <StackPanel Margin="20">
+                                        <TextBlock Text="[ COLOR PALETTE ]" Foreground="{DynamicResource ChromeHighlightBrush}" Margin="0,0,0,10"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,30">
+                                            <Button Content="DARK CHROME" Command="{Binding ChangeThemeCommand}" CommandParameter="DarkChrome" Style="{DynamicResource Y2KButton}" Margin="0,0,10,0"/>
+                                            <Button Content="NEON MATRIX" Command="{Binding ChangeThemeCommand}" CommandParameter="MatrixGreen" Style="{DynamicResource Y2KButton}"/>
+                                        </StackPanel>
+
+                                        <TextBlock Text="[ SYSTEM INTEGRATION ]" Foreground="{DynamicResource ChromeHighlightBrush}" Margin="0,0,0,10"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,30">
+                                            <TextBlock Text="System Tray:" Foreground="{DynamicResource PureWhiteBrush}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="ACTIVE" Foreground="#44FF44" FontWeight="Bold" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- INFO VIEW -->
+                                <Grid Visibility="{Binding CurrentView, Converter={x:Static local:Converters.EnumToVisibilityConverter}, ConverterParameter={x:Static models:AppView.Info}}">
+                                    <StackPanel Margin="20">
+                                        <TextBlock Text="[ APPLICATION INFO ]" Foreground="{DynamicResource ChromeHighlightBrush}" Margin="0,0,0,10"/>
+                                        <TextBlock Text="DEV MGR [Y2K] is a developer tool designed to monitor system stats, manage open ports, and control Docker containers seamlessly." Foreground="{DynamicResource SoftWhiteBrush}" TextWrapping="Wrap" Margin="0,0,0,20"/>
+
+                                        <TextBlock Text="[ DOCUMENTATION ]" Foreground="{DynamicResource ChromeHighlightBrush}" Margin="0,0,0,10"/>
+                                        <TextBlock Text="- PORTS: Lists open TCP/UDP ports. If running as Admin, you can kill processes." Foreground="{DynamicResource SoftWhiteBrush}" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                                        <TextBlock Text="- DOCKER: Lists active/inactive Docker containers. Search query filters results." Foreground="{DynamicResource SoftWhiteBrush}" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                                        <TextBlock Text="- THEMES: Available in Settings to swap the overall visual layout." Foreground="{DynamicResource SoftWhiteBrush}" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                                        <TextBlock Text="- SYSTEM TRAY: App minimizes to tray when closed or minimized. Double-click tray to restore." Foreground="{DynamicResource SoftWhiteBrush}" TextWrapping="Wrap" Margin="0,0,0,20"/>
+                                    </StackPanel>
+                                </Grid>
                             </Grid>
 
                         </Grid>
@@ -229,9 +371,9 @@
                 </Border>
 
                 <!-- Footer -->
-                <Grid Grid.Row="2" Background="{StaticResource GraphiteBrush}">
-                    <Border BorderBrush="{StaticResource MetallicGreyBrush}" BorderThickness="0,1,0,0"/>
-                    <TextBlock Text="made by biagigio" Foreground="{StaticResource ChromeHighlightBrush}" FontStyle="Italic" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,15,0" FontSize="11"/>
+                <Grid Grid.Row="2" Background="{DynamicResource GraphiteBrush}">
+                    <Border BorderBrush="{DynamicResource MetallicGreyBrush}" BorderThickness="0,1,0,0"/>
+                    <TextBlock Text="made by biagigio" Foreground="{DynamicResource ChromeHighlightBrush}" FontStyle="Italic" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,15,0" FontSize="11"/>
                     <TextBlock Text="STATUS: ONLINE, SCANNING..." Foreground="#00FF00" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="11" FontFamily="Consolas"/>
                 </Grid>
             </Grid>
