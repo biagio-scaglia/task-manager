@@ -326,12 +326,79 @@
                                             Visibility="{Binding IsAdmin, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}"/>
                                 </Grid>
 
-                                <!-- STARTUP VIEW EXPERIMENTAL -->
+                                <!-- STARTUP VIEW -->
                                 <Grid Visibility="{Binding CurrentView, Converter={x:Static local:Converters.EnumToVisibilityConverter}, ConverterParameter={x:Static models:AppView.Startup}}">
-                                    <StackPanel Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <TextBlock Text="[ STARTUP MANAGER ]" Foreground="{DynamicResource ChromeHighlightBrush}" Margin="0,0,0,10" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Modulo In Sviluppo (Work In Progress)..." Foreground="{DynamicResource SoftWhiteBrush}" HorizontalAlignment="Center"/>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <controls:Y2KSearchBar SearchText="{Binding SearchQuery, Mode=TwoWay}" Margin="10,10,10,0"/>
+
+                                    <!-- LOADING OVERLAY -->
+                                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding IsLoading, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="[ READING REGISTRY... ]" Foreground="{DynamicResource ChromeHighlightBrush}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"/>
                                     </StackPanel>
+
+                                    <!-- SCROLL LIST -->
+                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding IsLoading, Converter={x:Static local:Converters.InverseBooleanToVisibilityConverter}}">
+                                        <ItemsControl ItemsSource="{Binding StartupEntries}" Margin="10">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <Grid Margin="0,5">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="150"/>
+                                                                <ColumnDefinition Width="200"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="100"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            
+                                                            <StackPanel Grid.Column="0">
+                                                                <TextBlock Text="{Binding Name}" Foreground="{DynamicResource PureWhiteBrush}" FontWeight="Bold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}"/>
+                                                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                                    <Border Background="#222222" Padding="4,2" CornerRadius="2" Margin="0,0,5,0">
+                                                                        <TextBlock Text="{Binding RegistryLocation}" Foreground="{DynamicResource SoftWhiteBrush}" FontSize="10" FontWeight="Bold"/>
+                                                                    </Border>
+                                                                    <Border Background="#FF3333" Padding="4,2" CornerRadius="2" Visibility="{Binding RequiresAdmin, Converter={x:Static local:Converters.BooleanToVisibilityConverter}}">
+                                                                        <TextBlock Text="ADMIN" Foreground="{DynamicResource PureWhiteBrush}" FontSize="10" FontWeight="Bold"/>
+                                                                    </Border>
+                                                                </StackPanel>
+                                                            </StackPanel>
+
+                                                            <TextBlock Text="{Binding Command}" Grid.Column="1" Grid.ColumnSpan="2" Foreground="{DynamicResource ChromeHighlightBrush}" TextWrapping="Wrap" Margin="10,0" VerticalAlignment="Center"/>
+
+                                                            <Button Content="DELETE" Grid.Column="3" Padding="5" Foreground="#FF0000" Background="Transparent" BorderBrush="#FF0000" VerticalAlignment="Center"
+                                                                    Command="{Binding DataContext.DeleteStartupEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                    CommandParameter="{Binding}">
+                                                                <Button.Style>
+                                                                    <Style TargetType="Button" BasedOn="{StaticResource Y2KButton}">
+                                                                        <Setter Property="IsEnabled" Value="True"/>
+                                                                        <!-- Disable if it's a critical system executable -->
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsSystemExecutable}" Value="True">
+                                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                                                <Setter Property="ToolTip" Value="Cannot delete system-critical executables."/>
+                                                                            </DataTrigger>
+                                                                            <!-- Disable if it requires admin and user is not admin -->
+                                                                            <MultiDataTrigger>
+                                                                                <MultiDataTrigger.Conditions>
+                                                                                    <Condition Binding="{Binding RequiresAdmin}" Value="True"/>
+                                                                                    <Condition Binding="{Binding DataContext.IsAdmin, RelativeSource={RelativeSource AncestorType=Window}}" Value="False"/>
+                                                                                </MultiDataTrigger.Conditions>
+                                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                                                <Setter Property="ToolTip" Value="Requires Administrator privileges to delete from HKLM."/>
+                                                                            </MultiDataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                            </Button>
+                                                        </Grid>
+                                                        <Border BorderBrush="{DynamicResource DeepBlackBrush}" BorderThickness="0,0,0,1"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
                                 </Grid>
 
                                 <!-- SETTINGS VIEW -->

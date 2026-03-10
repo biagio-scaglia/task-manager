@@ -17,6 +17,7 @@ public partial class MainViewModel : ObservableObject
     private readonly SystemMonitorService monitorService;
     private readonly ThemeService themeService;
     private readonly HostsFileService hostsFileService;
+    private readonly StartupManagerService startupService;
     private readonly System.Timers.Timer statsTimer;
 
     [ObservableProperty]
@@ -30,6 +31,9 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private ObservableCollection<HostEntry> hostEntries;
+
+    [ObservableProperty]
+    private ObservableCollection<StartupEntry> startupEntries;
 
     [ObservableProperty]
     private SystemStats currentSystemStats;
@@ -58,10 +62,12 @@ public partial class MainViewModel : ObservableObject
         monitorService = new SystemMonitorService();
         themeService = new ThemeService();
         hostsFileService = new HostsFileService();
+        startupService = new StartupManagerService();
 
         OpenPorts = new ObservableCollection<SystemPort>();
         DockerContainers = new ObservableCollection<DockerContainer>();
         HostEntries = new ObservableCollection<HostEntry>();
+        StartupEntries = new ObservableCollection<StartupEntry>();
         CurrentSystemStats = new SystemStats();
 
         currentViewTitle = "// SYSTEM STATS";
@@ -164,7 +170,7 @@ public partial class MainViewModel : ObservableObject
                 await LoadHostsViewAsync();
                 break;
             case AppView.Startup:
-                LoadStartupView();
+                await LoadStartupViewAsync();
                 break;
             case AppView.Info:
                 LoadInfoView();
@@ -227,10 +233,40 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void LoadStartupView()
+    private async Task LoadStartupViewAsync()
     {
-        CurrentViewTitle = "// STARTUP MANAGER (WIP)";
+        CurrentViewTitle = "// STARTUP MANAGER";
         CurrentView = AppView.Startup;
+
+        IsLoading = true;
+        StartupEntries.Clear();
+        string query = SearchQuery?.ToLower() ?? string.Empty;
+
+        var entries = await startupService.GetStartupEntriesAsync();
+        
+        foreach (var entry in entries)
+        {
+            if (string.IsNullOrWhiteSpace(query) || 
+                entry.Name.ToLower().Contains(query) || 
+                entry.Command.ToLower().Contains(query))
+            {
+                StartupEntries.Add(entry);
+            }
+        }
+        IsLoading = false;
+    }
+
+    [RelayCommand]
+    private async Task DeleteStartupEntryAsync(StartupEntry entry)
+    {
+        if (entry != null)
+        {
+            bool success = await startupService.DeleteStartupEntryAsync(entry);
+            if (success)
+            {
+                await LoadStartupViewAsync();
+            }
+        }
     }
 
     [RelayCommand]
