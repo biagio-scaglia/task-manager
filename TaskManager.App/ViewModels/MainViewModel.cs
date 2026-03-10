@@ -20,6 +20,9 @@ public partial class MainViewModel : ObservableObject
     private readonly StartupManagerService startupService;
     private readonly System.Timers.Timer statsTimer;
 
+    private List<SystemPort>? _cachedPorts;
+    private List<DockerContainer>? _cachedContainers;
+
     [ObservableProperty]
     private string currentViewTitle;
 
@@ -113,9 +116,13 @@ public partial class MainViewModel : ObservableObject
         IsLoading = true;
         OpenPorts.Clear();
         string query = SearchQuery?.ToLower() ?? string.Empty;
-        var ports = await portService.GetOpenPortsAsync();
         
-        foreach (var p in ports)
+        if (_cachedPorts == null)
+        {
+            _cachedPorts = await portService.GetOpenPortsAsync();
+        }
+        
+        foreach (var p in _cachedPorts)
         {
             if (string.IsNullOrWhiteSpace(query) || 
                 p.ProcessName.ToLower().Contains(query) || 
@@ -137,9 +144,13 @@ public partial class MainViewModel : ObservableObject
         IsLoading = true;
         DockerContainers.Clear();
         string query = SearchQuery?.ToLower() ?? string.Empty;
-        var containers = await dockerService.GetContainersAsync();
         
-        foreach (var c in containers)
+        if (_cachedContainers == null)
+        {
+            _cachedContainers = await dockerService.GetContainersAsync();
+        }
+        
+        foreach (var c in _cachedContainers)
         {
             if (string.IsNullOrWhiteSpace(query) || 
                 c.Names.ToLower().Contains(query) || 
@@ -284,6 +295,7 @@ public partial class MainViewModel : ObservableObject
         if (port != null && port.ProcessId > 0)
         {
             portService.KillProcess(port.ProcessId);
+            _cachedPorts = null; // Invalidate cache so it forces a re-scan next load
             await LoadPortsViewAsync(); 
         }
     }
@@ -316,7 +328,11 @@ public partial class MainViewModel : ObservableObject
         if (container != null)
         {
             bool success = dockerService.StartContainer(container.Id);
-            if (success) await LoadDockerViewAsync();
+            if (success) 
+            {
+                _cachedContainers = null;
+                await LoadDockerViewAsync();
+            }
         }
     }
 
@@ -326,7 +342,11 @@ public partial class MainViewModel : ObservableObject
         if (container != null)
         {
             bool success = dockerService.StopContainer(container.Id);
-            if (success) await LoadDockerViewAsync();
+            if (success) 
+            {
+                _cachedContainers = null;
+                await LoadDockerViewAsync();
+            }
         }
     }
 
@@ -336,7 +356,11 @@ public partial class MainViewModel : ObservableObject
         if (container != null)
         {
             bool success = dockerService.RemoveContainer(container.Id);
-            if (success) await LoadDockerViewAsync();
+            if (success) 
+            {
+                _cachedContainers = null;
+                await LoadDockerViewAsync();
+            }
         }
     }
 }
