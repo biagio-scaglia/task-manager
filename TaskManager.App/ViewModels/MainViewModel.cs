@@ -55,7 +55,23 @@ public partial class MainViewModel : ObservableObject
 
     partial void OnSearchQueryChanged(string value)
     {
-        _ = RefreshCurrentViewAsync();
+        // Don't refresh if it's being cleared programmatically on navigation
+        if (!_isNavigating) 
+        {
+            _ = RefreshCurrentViewAsync();
+        }
+    }
+
+    private bool _isNavigating = false;
+
+    private void ClearSearch()
+    {
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            _isNavigating = true;
+            SearchQuery = string.Empty;
+            _isNavigating = false;
+        }
     }
 
     public MainViewModel()
@@ -101,6 +117,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void LoadSystemView()
     {
+        if (CurrentView != AppView.System) ClearSearch();
         CurrentViewTitle = "// SYSTEM STATS";
         CurrentView = AppView.System;
         
@@ -110,6 +127,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task LoadPortsViewAsync()
     {
+        if (CurrentView != AppView.Ports) ClearSearch();
         CurrentViewTitle = "// OPEN PORTS DETECTED";
         CurrentView = AppView.Ports;
 
@@ -138,6 +156,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task LoadDockerViewAsync()
     {
+        if (CurrentView != AppView.Docker) ClearSearch();
         CurrentViewTitle = "// DOCKER CONTAINERS";
         CurrentView = AppView.Docker;
 
@@ -195,6 +214,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void LoadSettingsView()
     {
+        if (CurrentView != AppView.Settings) ClearSearch();
         CurrentViewTitle = "// SYSTEM SETTINGS";
         CurrentView = AppView.Settings;
     }
@@ -202,6 +222,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void LoadInfoView()
     {
+        if (CurrentView != AppView.Info) ClearSearch();
         CurrentViewTitle = "// INFO & DOCUMENTATION";
         CurrentView = AppView.Info;
     }
@@ -209,6 +230,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task LoadHostsViewAsync()
     {
+        if (CurrentView != AppView.Hosts) ClearSearch();
         CurrentViewTitle = "// HOSTS FILE ENTRIES";
         CurrentView = AppView.Hosts;
 
@@ -246,6 +268,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task LoadStartupViewAsync()
     {
+        if (CurrentView != AppView.Startup) ClearSearch();
         CurrentViewTitle = "// STARTUP MANAGER";
         CurrentView = AppView.Startup;
 
